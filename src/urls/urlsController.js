@@ -14,10 +14,33 @@ async function urlShorten(req, res) {
       VALUES
         ($1, $2, $3, $4)
     `, [url, shortUrl, userId, today]);
-    res.sendStatus(201);
+    res.status(201).send({ shortUrl });
   } catch (err) {
     res.status(500).send('urlShorten: \n' + err);
   }
 };
 
-export { urlShorten };
+async function getUrlById(req, res) {
+  const { id } = req.params;
+  
+  try {
+    const { rows: [url] } = await connection.query(`
+      SELECT
+        id,
+        "shortUrl",
+        url
+      FROM
+        links
+      WHERE
+        id = $1
+    `, [id]);
+    if (!url.shortUrl) {
+      return res.sendStatus(404);
+    }
+    res.status(200).send(url);
+  } catch (err) {
+    res.status(500).send('getUrlById: \n' + err);
+  }
+}
+
+export { urlShorten, getUrlById };

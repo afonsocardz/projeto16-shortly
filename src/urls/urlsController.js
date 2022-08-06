@@ -20,9 +20,71 @@ async function urlShorten(req, res) {
   }
 };
 
+async function deleteUrl (req, res){
+  const userId = res.locals.userId;
+  const {id} = req.params;
+  try {
+    const {rows: [url]} = await connection.query(`
+      SELECT
+        id,
+        "userId"
+      FROM
+        links
+      WHERE
+        id = $1
+    `, [id]);
+    if(!url){
+      return res.sendStatus(404);
+    }
+    if(url.userId != userId){
+      return res.sendStatus(401);
+    }
+    await connection.query(`
+      DELETE FROM visitants WHERE "linkId" = $1
+    `, [id]);
+    await connection.query(`
+      DELETE FROM links WHERE id = $1
+    `, [id]);
+    res.sendStatus(204);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+}
+
+async function redirect(req, res) {
+  const {shortUrl} = req.params;
+  try {
+    const {rows: [url]} = await connection.query(`
+      SELECT
+        id,
+        url,
+        "shortUrl"
+      FROM
+        links
+      WHERE
+       "shortUrl" = $1
+    `, [shortUrl]);
+    if(!url){
+      return res.sendStatus(404);
+    }
+    const today = dayjs().format('YYYY-MM-DD');
+    await connection.query(`
+      INSERT INTO visitants
+        ("visitDate", "linkId")
+      VALUES
+        ($1, $2)
+    `, [today, url.id]);
+    res.redirect(url.url)
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+}
+
 async function getUrlById(req, res) {
   const { id } = req.params;
-  
+
   try {
     const { rows: [url] } = await connection.query(`
       SELECT
@@ -43,4 +105,4 @@ async function getUrlById(req, res) {
   }
 }
 
-export { urlShorten, getUrlById };
+export { urlShorten, getUrlById, redirect, deleteUrl };

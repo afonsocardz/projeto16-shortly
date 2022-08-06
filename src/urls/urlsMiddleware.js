@@ -5,7 +5,7 @@ async function validateUrl (req, res, next){
   try {
     const {error} = Url.validate(url);
     if (error){
-      return res.status(422);
+      return res.sendStatus(422);
     }
     res.locals.url = url;
     next();

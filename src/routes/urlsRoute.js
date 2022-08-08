@@ -1,7 +1,7 @@
 import {Router} from 'express';
-import userAuth from '../auth/userAuth.js';
-import { deleteUrl, getUrlById, redirect, urlShorten } from './urlsController.js';
-import { validateUrl } from './urlsMiddleware.js';
+import userAuth from '../utils/userAuth.js';
+import { deleteUrl, getUrlById, redirect, urlShorten } from '../controllers/urlsController.js';
+import { validateUrl } from '../middlewares/urlsMiddleware.js';
 
 const route = Router();
 

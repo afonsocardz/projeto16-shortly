@@ -1,4 +1,4 @@
-import Url from "./Url.js";
+import Url from "../schemas/Url.js";
 
 async function validateUrl (req, res, next){
   const url = req.body;

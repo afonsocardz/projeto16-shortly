@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import connection from '../utils/databases/postgres.js';
-import User from "./User.js";
+import User from "../schemas/User.js";
 
 dotenv.config();
 

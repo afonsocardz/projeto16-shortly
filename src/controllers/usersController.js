@@ -33,9 +33,11 @@ async function signIn(req, res) {
   const login = req.body;
   try {
     const findUser = await userRepository.userSignIn(login.email);
+    if (!findUser) {
+      return res.sendStatus(401);
+    }
     const validPassword = bcrypt.compareSync(login.password, findUser.password);
-
-    if (!findUser || !validPassword) {
+    if (!validPassword) {
       return res.sendStatus(401);
     }
     const token = jwt.signToken(findUser.id);

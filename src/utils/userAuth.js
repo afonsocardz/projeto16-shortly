@@ -4,6 +4,7 @@ function userAuth (req, res, next){
   const {authorization} = req.headers
   const token = authorization?.replace('Bearer ', '');
   const userId = jwt.verify(token);
+  console.log(userId);
   if(!userId){
     return res.sendStatus(401);
   }

@@ -42,7 +42,7 @@ async function redirect(req, res) {
       return res.sendStatus(404);
     }
     const today = dayjs().format('YYYY-MM-DD');
-    await urlRepository.updateVisits(url, today);
+    await urlRepository.updateVisits(url);
     res.redirect(url.url)
   } catch (err) {
     console.log(err);

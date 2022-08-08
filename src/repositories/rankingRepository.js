@@ -6,14 +6,12 @@ async function getUsersRanking() {
       users.id,
       users.name,
       count(links."userId") AS "linksCount",
-      count(visitants."linkId") AS "visitCount"
+      sum("visitsCount") AS "visitCount"
     FROM
       users
       LEFT JOIN links ON links."userId" = users.id
-      LEFT JOIN visitants ON visitants."linkId" = links.id
     GROUP BY
-      users.id,
-      users.name
+      users.id
     ORDER BY
       "visitCount" DESC
     LIMIT

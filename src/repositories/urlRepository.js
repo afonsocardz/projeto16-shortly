@@ -14,9 +14,6 @@ async function getUrlById(id) {
 
 async function deleteUrl(id) {
   await connection.query(`
-      DELETE FROM visitants WHERE "linkId" = $1
-    `, [id]);
-  await connection.query(`
       DELETE FROM links WHERE id = $1
     `, [id]);
 }
@@ -42,14 +39,10 @@ async function createShortenUrl(url, shortUrl, userId, today){
     `, [url, shortUrl, userId, today]);
 }
 
-async function updateVisits({ id }, today) {
-
+async function updateVisits({ id, visitsCount }) {
   await connection.query(`
-      INSERT INTO visitants
-        ("visitDate", "linkId")
-      VALUES
-        ($1, $2)
-    `, [today, id]);
+    UPDATE links SET "visitsCount" = $1 WHERE id = $2
+  `, [visitsCount + 1, id]);
 }
 
 export const urlRepository = {

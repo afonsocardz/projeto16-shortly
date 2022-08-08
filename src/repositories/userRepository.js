@@ -6,11 +6,10 @@ async function getLinkCount(userId) {
       links.id AS "urlId",
       links."shortUrl" as "shortUrl",
       links.url AS url,
-      count(visitants."linkId") AS "visitCount"
+      links."visitsCount" AS "visitCount"
     FROM
       users
       JOIN links ON links."userId" = users.id
-      JOIN visitants ON visitants."linkId" = links.id
     WHERE
       users.id = $1
     GROUP BY
@@ -26,11 +25,10 @@ async function getUserTotalVisits(userId) {
     SELECT
       users.id AS id,
       users.name AS name,
-      count(visitants."linkId") AS "visitCount"
+      sum(links."visitsCount") AS "visitCount"
     FROM
       users
       JOIN links ON links."userId" = users.id
-      JOIN visitants ON visitants."linkId" = links.id
     WHERE
       users.id = $1
     GROUP BY
